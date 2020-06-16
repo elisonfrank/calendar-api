@@ -1,5 +1,7 @@
 This API provides information about the month.
+
 You need to insert a month and year in the URL.
+
 The API will return a JSON like the example below:
 
 ###### Presentation of the first day of June 2020
@@ -32,4 +34,5 @@ If the day is a holiday, extra information will be displayed on the "holiday" pr
 ```
 
 The **"note"** property is for showing notes added on the date. (under construction)
+
 The **"enabled"** property is to identify whether the day belongs to the month. To fill all calendar days, other days are shown.
