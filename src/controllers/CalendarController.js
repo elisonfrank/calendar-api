@@ -1,4 +1,6 @@
 const holidays = require("date-holidays");
+const mongoose = require("mongoose");
+const Note = mongoose.model("Note");
 
 const week = [
   "sunday",
@@ -65,6 +67,7 @@ module.exports = {
       }
 
       // falta pegar os notes o banco
+      const note = await Note.find({ date });
 
       const dateObj = {
         date,
@@ -72,7 +75,7 @@ module.exports = {
           dayOfWeek: date.getDay(),
           fullDayOfWeek: week[date.getDay()],
           holiday: hd.isHoliday(date),
-          note: "",
+          note: note.length === 0 ? "" : note[0].description,
           enabled: true,
         },
       };
@@ -102,5 +105,20 @@ module.exports = {
     }
 
     res.json(calendar);
+  },
+
+  async store(req, res) {
+    console.log(req.body);
+    const note = await Note.create(req.body);
+
+    return res.json(note);
+  },
+
+  async update(req, res) {
+    const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    return res.json(note);
   },
 };
