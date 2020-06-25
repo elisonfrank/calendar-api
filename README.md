@@ -35,7 +35,7 @@ If the day is a holiday, extra information will be displayed on the "holiday" pr
   ...
 ```
 
-The **"note"** property is for showing notes added on the date. (under construction)
+The **"note"** property is for showing notes added on the date.
 
 The **"enabled"** property is to identify whether the day belongs to the month. To fill all calendar days, other days are shown.
 
