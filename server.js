@@ -8,11 +8,18 @@ app.use(express.json());
 app.use(cors());
 
 // initializing db
-mongoose.connect("mongodb://localhost:27017/calendarapi", {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-  useFindAndModify: false,
-});
+mongoose.connect(
+  "mongodb://localhost:27017/calendarapi",
+  {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useFindAndModify: false,
+  },
+  (err) => {
+    if (err)
+      console.log("Unable to connect to the server. Please start the server");
+  }
+);
 
 requireDir("./src/models");
 

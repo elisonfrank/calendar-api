@@ -66,8 +66,10 @@ module.exports = {
         break;
       }
 
-      // falta pegar os notes o banco
-      const note = await Note.find({ date });
+      // finding db notes
+      const note = Note.find({ date });
+      const noteDescription =
+        note || note.lenght === 0 ? "" : note[0].description;
 
       const dateObj = {
         date,
@@ -75,7 +77,7 @@ module.exports = {
           dayOfWeek: date.getDay(),
           fullDayOfWeek: week[date.getDay()],
           holiday: hd.isHoliday(date),
-          note: note.length === 0 ? "" : note[0].description,
+          note: noteDescription,
           enabled: true,
         },
       };
@@ -104,7 +106,7 @@ module.exports = {
       }
     }
 
-    res.json(calendar);
+    await res.json(calendar);
   },
 
   async store(req, res) {
