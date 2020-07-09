@@ -11,8 +11,8 @@ app.use(cors());
 mongoose.connect(
   "mongodb://localhost:27017/calendarapi",
   {
-    useUnifiedTopology: true,
     useNewUrlParser: true,
+    useUnifiedTopology: true,
     useFindAndModify: false,
   },
   (err) => {

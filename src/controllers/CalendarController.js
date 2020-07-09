@@ -22,10 +22,11 @@ module.exports = {
       year = date.getFullYear();
     }
 
+    console.log("month: " + month + " year: " + year);
+
     month = Number(month);
     year = Number(year);
 
-    console.log("month: " + month + " year: " + year);
     const calendar = [];
 
     const hd = new holidays();
@@ -48,6 +49,7 @@ module.exports = {
             dayOfWeek: date.getDay(),
             fullDayOfWeek: week[date.getDay()],
             holiday: hd.isHoliday(date),
+            noteid: "",
             note: "",
             enabled: false,
           },
@@ -67,9 +69,18 @@ module.exports = {
       }
 
       // finding db notes
-      const note = Note.find({ date });
-      const noteDescription =
-        note || note.lenght === 0 ? "" : note[0].description;
+      let noteDescription = "";
+      let noteId = "";
+      await Note.findOne({ date }, (err, note) => {
+        if (err) {
+          console.log(
+            `Problem when trying to find note with date '${date.toLocaleDateString()}. ${err}`
+          );
+        } else if (note) {
+          noteDescription = note.description;
+          noteId = note._id;
+        }
+      });
 
       const dateObj = {
         date,
@@ -77,6 +88,7 @@ module.exports = {
           dayOfWeek: date.getDay(),
           fullDayOfWeek: week[date.getDay()],
           holiday: hd.isHoliday(date),
+          noteid: noteId,
           note: noteDescription,
           enabled: true,
         },
@@ -97,6 +109,7 @@ module.exports = {
             dayOfWeek: date.getDay(),
             fullDayOfWeek: week[date.getDay()],
             holiday: hd.isHoliday(date),
+            noteid: "",
             note: "",
             enabled: false,
           },
@@ -110,17 +123,26 @@ module.exports = {
   },
 
   async store(req, res) {
-    console.log(req.body);
-    const note = await Note.create(req.body);
-
-    return res.json(note);
+    console.log("Requisition body", req.body);
+    await Note.create(req.body)
+      .catch((error) => {
+        console.log("Store:", error);
+        res.json({ error: error.errors.description.properties.message });
+      })
+      .then((note) => res.json(note));
   },
 
   async update(req, res) {
-    const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    console.log("Requisition params", req.params);
+    console.log("Requisition body", req.body);
 
-    return res.json(note);
+    await Note.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    })
+      .catch((error) => {
+        console.log("Update:", error);
+        res.json({ error: error.errors.description.properties.message });
+      })
+      .then((note) => res.json(note));
   },
 };
