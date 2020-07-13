@@ -25,4 +25,6 @@ requireDir("./src/models");
 
 app.use("/api", require("./src/routes"));
 
+require("events").EventEmitter.prototype._maxListeners = 100;
+
 app.listen(3001);
