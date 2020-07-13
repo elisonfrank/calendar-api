@@ -71,15 +71,18 @@ module.exports = {
       // finding db notes
       let noteDescription = "";
       let noteId = "";
-      await Note.findOne({ date }, (err, note) => {
-        if (err) {
-          console.log(
-            `Problem when trying to find note with date '${date.toLocaleDateString()}. ${err}`
-          );
-        } else if (note) {
-          noteDescription = note.description;
-          noteId = note._id;
-        }
+
+      mongoose.connection.on("connected", async () => {
+        await Note.findOne({ date }, (err, note) => {
+          if (err) {
+            console.log(
+              `Problem when trying to find note with date '${date.toLocaleDateString()}. ${err}`
+            );
+          } else if (note) {
+            noteDescription = note.description;
+            noteId = note._id;
+          }
+        });
       });
 
       const dateObj = {
