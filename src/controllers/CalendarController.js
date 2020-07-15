@@ -127,25 +127,40 @@ module.exports = {
 
   async store(req, res) {
     console.log("Requisition body", req.body);
-    await Note.create(req.body)
-      .catch((error) => {
-        console.log("Store:", error);
-        res.json({ error: error.errors.description.properties.message });
-      })
-      .then((note) => res.json(note));
+
+    await mongoose.connection.on("disconnected", () => {
+      console.log("Unable to store. Database disconnected!");
+      res.json({ error: "Unable to store. Database disconnected!" });
+    });
+
+    await mongoose.connection.on("connected", () => {
+      Note.create(req.body)
+        .catch((error) => {
+          console.log("Store:", error);
+          res.json({ error: error.errors.description.properties.message });
+        })
+        .then((note) => res.json(note));
+    });
   },
 
   async update(req, res) {
     console.log("Requisition params", req.params);
     console.log("Requisition body", req.body);
 
-    await Note.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    })
-      .catch((error) => {
-        console.log("Update:", error);
-        res.json({ error: error.errors.description.properties.message });
+    await mongoose.connection.on("disconnected", () => {
+      console.log("Unable to update. Database disconnected!");
+      res.json({ error: "Unable to update. Database disconnected!" });
+    });
+
+    await mongoose.connection.on("connected", () => {
+      Note.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
       })
-      .then((note) => res.json(note));
+        .catch((error) => {
+          console.log("Update:", error);
+          res.json({ error: error.errors.description.properties.message });
+        })
+        .then((note) => res.json(note));
+    });
   },
 };

@@ -17,7 +17,7 @@ mongoose.connect(
   },
   (err) => {
     if (err)
-      console.log("Unable to connect to the server. Please start the server");
+      console.log("Unable to connect to the database. Please start the server");
   }
 );
 
